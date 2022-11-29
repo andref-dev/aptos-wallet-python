@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 
-from controllers.users import create_user, get_all_users, get_user
+from controllers.users import create_user, get_all_users, get_user, set_username, get_username
 from controllers.coins import fund_user, get_balance, transfer_main_coin
 from controllers.nfts import (
     create_collection, get_all_collections, get_collection_data,
@@ -38,6 +38,17 @@ def users():
 def get_user_route(user_id):
     res = get_user(app_data, user_id)
     return jsonify(res)
+
+
+@app.route("/users/<user_id>/username", methods=["GET", "POST"])
+def user_username(user_id):
+    if request.method == "POST":
+        content = request.get_json()
+        res = set_username(app_data, user_id, content["username"])
+        return jsonify(res)
+    else:
+        res = get_username(app_data, user_id)
+        return jsonify(res)
 
 
 @app.route("/coin/balance", methods=["GET"])
